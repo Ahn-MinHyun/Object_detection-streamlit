@@ -8,14 +8,14 @@ def main():
 
     st.title('Object Detection')
 
-    menu = ['Home','Tensorflow','segmentation','YOLO','About']
+    menu = ['Home','SSD','YOLO','segmentation','About']
 
     choice = st.sidebar.selectbox('MENU',menu)
 
     if choice == 'Home':
         Home()
 
-    elif choice == 'Tensorflow':
+    elif choice == 'SSD':
         image_detection()
         video_detection()
     
@@ -24,6 +24,7 @@ def main():
 
     elif choice == 'YOLO':
         yolo_detection()
+        
 
     else: 
         st.subheader('Introduce project')

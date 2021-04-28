@@ -7,6 +7,8 @@ __pycache__/
 *.so
 database/yolo
 database/models
+*.mp4
+
 # Distribution / packaging
 .Python
 build/

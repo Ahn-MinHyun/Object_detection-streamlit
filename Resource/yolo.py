@@ -42,6 +42,8 @@ def box_draw(image, boxes, scores, classes, all_classes):
     scores : object의 확률, ndarray
     all_classes : 모든 클래스이 이름
     drow_box 를 그리는 함수'''
+    class_dic ={}
+    i = 0
     for box, score, cl in zip(boxes, scores, classes):
         x, y, w, h = box
 
@@ -56,11 +58,15 @@ def box_draw(image, boxes, scores, classes, all_classes):
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.6, (0, 0, 255), 1,
                     cv2.LINE_AA)
+        class_dic[i] = [all_classes[cl], score, box]
+        i += 1
 
-        print('class: {0}, score: {1:.2f}'.format(all_classes[cl], score))
-        print('box coordinate x,y,w,h: {0}'.format(box))
+    print('class: {0}, score: {1:.2f}'.format(all_classes[cl], score))
+    print(class_dic)
+    print('box coordinate x,y,w,h: {0}'.format(box))
 
     print("------------")
+    return class_dic
 
 def detect_image( image, yolo, all_classes):
     ''' image : 오리지날 이미지
@@ -72,27 +78,57 @@ def detect_image( image, yolo, all_classes):
 
     image_boxes, image_classes, image_scores = yolo.predict(pimage, image.shape)
 
+
+
     if image_boxes is not None:
-        box_draw(image, image_boxes, image_scores, image_classes, all_classes)
+         class_dic = box_draw(image, image_boxes, image_scores, image_classes, all_classes)
+    # print('class:',image_classes)
+    # print('image_scores',image_scores)
     
-    return image
+    return image, class_dic
 
 
 
 
 def yolo_detection():
-    st.title('tesorflow image object detetion')
+    st.title(' image object detetion')
+
+
 
     st.subheader('이미지파일 업로드')
     image_file = st.file_uploader('Upload Image', #파일업로드 
                                 type= ['png', 'jpg','jpeg']) #업로드 될 수 있는 이미지 파일
     if image_file is not None :
         img = load_image(image_file)
-        st.image(img, width= 700)
-        if st.button('Detection'):
-            all_classes = get_classess('database/yolo/data/coco_classes.txt')
-            yolo = YOLO(0.6,0.6)
-            image = np.array(img)
-            result_image= detect_image(image, yolo, all_classes)
-            st.image(result_image, width= 700)
-  
+        # st.image(img, width= 700)
+
+        all_classes = get_classess('database/yolo/data/coco_classes.txt')
+        yolo = YOLO(0.6,0.6)
+        image = np.array(img)
+        result_image,  class_dic = detect_image(image, yolo, all_classes)
+        # cv2.rectangle(result_image, (top, left), (right, bottom), (255, 0, 0), 2)
+
+        print(class_dic)
+        st.sidebar.subheader('object score')
+        for i, (class_name, class_score,box)  in class_dic.items():
+            st.sidebar.write('**'+class_name+'**'+ '  '+ str(round(class_score,2)))
+        select_list = {i[0] for i in class_dic.values()}
+        
+        select_class= st.sidebar.selectbox('데이터 표시', list(select_list))
+
+
+        for i in class_dic.values():
+            if i[0] in select_class :
+                box = i[2]
+                x, y, w, h = box
+
+                top = max(0, np.floor(x + 0.5).astype(int))
+                left = max(0, np.floor(y + 0.5).astype(int))
+                right = min(image.shape[1], np.floor(x + w + 0.5).astype(int))
+                bottom = min(image.shape[0], np.floor(y + h + 0.5).astype(int))
+
+                cv2.rectangle(result_image, (top, left), (right, bottom), (135, 250, 51), 2)
+
+        st.image(result_image, width= 700)
+
+

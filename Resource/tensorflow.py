@@ -44,15 +44,6 @@ def load_model():
 
     return model
 
-## 라벨 불러오기
-# List of the strings that is used to add correct label for each box.
-print('라벨')
-PATH_TO_LABELS = 'database/models/research/object_detection/data/mscoco_label_map.pbtxt'
-category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
-
-# 모델 불러오기
-
-detection_model = load_model()
 
 
 # 모델에 맞게 이미지를 맞춰주는 함수
@@ -105,6 +96,8 @@ def show_inference(model, image_np):
     # image_np = cv2.imread(str(image_path))
     # Actual detection.
     output_dict = run_inference_for_single_image(model, image_np)
+    PATH_TO_LABELS = 'database/models/research/object_detection/data/mscoco_label_map.pbtxt'
+    category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
     # Visualization of the results of a detection.
     vis_util.visualize_boxes_and_labels_on_image_array(
         image_np,
@@ -115,8 +108,10 @@ def show_inference(model, image_np):
         instance_masks=output_dict.get('detection_masks_reframed',None),
         use_normalized_coordinates=True,
         line_thickness=8)
-
-    st.image(image_np, width= 700)
+    print('what : ',output_dict['detection_classes'])
+    print('what1 : ',output_dict['detection_scores'])
+    print('what2 :', output_dict)
+    st.image(image_np, width= 600)
     # cv2.imshow("result",image_np)
 
 def load_image(image_file):
@@ -125,6 +120,13 @@ def load_image(image_file):
 
 
 def image_detection():
+    ## 라벨 불러오기
+    # List of the strings that is used to add correct label for each box.
+    # print('라벨')
+
+    # 모델 불러오기
+    detection_model = load_model()
+
     st.title('tesorflow image object detetion')
 
     st.subheader('이미지파일 업로드')
@@ -133,10 +135,8 @@ def image_detection():
     if image_file is not None :
         st.write(image_file.name)
         img = load_image(image_file)
-        st.image(img, width= 700)
-        if st.button('Detection'):
-            pix = np.array(img)
-            show_inference(detection_model, pix)
+        pix = np.array(img)
+        show_inference(detection_model, pix)
         # print(pix)
 
 def video_detection():
