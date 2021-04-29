@@ -13,8 +13,11 @@ def Home():
     st.image(result_img)
 
     st.write('연속 처리하여 동영상의 물체들을 구분할 수 있습니다.')
-
-    video_file = open('database/video/output.mp4','rb').read() #비디오 파일 가져오기 window는 encoding = 'cp949'를 사용함
+    
+    st.text('서버의 사양이 낮아 동영상 변환 불가로 동영상첨부')
+    seg_video = open('database/video/segmantic.mp4','rb').read()
+    st.video(seg_video)
+    video_file = open('database/video/output.mp4','rb').read()
     st.video(video_file)
 
     st.write('''detection 모델들은 Bounding box를 만들고 각 box에 있는 feature를 extract한 후 classifier를 적용합니다. 
@@ -46,6 +49,7 @@ def Home():
     Segmentation이란 한 그림 안에서 **영역**을 나누는 방식입니다.''')
     seg_reference = Image.open('database/image/Segementation.png')
     st.image(seg_reference)
+
     
 
 

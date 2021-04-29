@@ -101,11 +101,12 @@ def segementic_detection():
 
         # 원본이미지랑, 색마스크 이미지를 합쳐서 보여준다.
         # 가중치 비율을 줘서 보여준다. 
+        st.sidebar.write('Model : cityscapes/enet')
+        st.sidebar.text('구분 색의 농도')
         mask_slide = st.sidebar.slider('mask',min_value=0.3, max_value=1.0, step=0.05)
         # print(mask_slide)
         cv_enet_model_output = ( ( (1-mask_slide) * sample_img ) + ( mask_slide * mask_class_map) ).astype('uint8')
-        
-
+  
         # 라벨 가져오기
         my_legend = np.full(( len(label_values) * 25 ,  300 , 3 ) , 255  , dtype='uint8' )
         # my_legend = np.zeros( ( len(label_values) * 25 ,  300 , 3 )   , dtype='uint8' )
@@ -115,6 +116,10 @@ def segementic_detection():
             cv2.putText(my_legend, class_name, (6, (i*25) + 16) , 
                         cv2.FONT_HERSHEY_TRIPLEX, 0.5, (0, 0, 0) , 1 )
             cv2.rectangle(my_legend, (200, (i*25)), (300, (i*25) + 20) , tuple(color_info),-1)
+      
+##https://learn.alwaysai.co/how-to-detect-pedestrians-and-bicyclists-in-a-cityscape-video
+        # labels_to_mask = [ 'Person', 'Rider', 'Bicycle'] 
+        # print ( "masked label : \ n {} \ n".format (labels_to_mask))
 
         # print("my_lengend",my_legend)
         # # cv2.imshow('color',mask_class_map)

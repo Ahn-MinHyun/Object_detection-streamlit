@@ -99,7 +99,7 @@ def show_inference(model, image_np):
     PATH_TO_LABELS = 'database/models/research/object_detection/data/mscoco_label_map.pbtxt'
     category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
     # Visualization of the results of a detection.
-    vis_util.visualize_boxes_and_labels_on_image_array(
+    image_np, display_class_list = vis_util.amh_namelist_chimage(
         image_np,
         np.array(output_dict['detection_boxes']),
         output_dict['detection_classes'],
@@ -108,10 +108,14 @@ def show_inference(model, image_np):
         instance_masks=output_dict.get('detection_masks_reframed',None),
         use_normalized_coordinates=True,
         line_thickness=8)
-    print('what : ',output_dict['detection_classes'])
-    print('what1 : ',output_dict['detection_scores'])
-    print('what2 :', output_dict)
+    # print('what : ',output_dict['detection_classes'])
+    # print('what1 : ',output_dict['detection_scores'])
+
+    
+
+    # print('what:', display_class_list)
     st.image(image_np, width= 600)
+    return display_class_list
     # cv2.imshow("result",image_np)
 
 def load_image(image_file):
@@ -120,12 +124,9 @@ def load_image(image_file):
 
 
 def image_detection():
-    ## 라벨 불러오기
-    # List of the strings that is used to add correct label for each box.
-    # print('라벨')
 
     # 모델 불러오기
-    detection_model = load_model()
+
 
     st.title('tesorflow image object detetion')
 
@@ -133,11 +134,24 @@ def image_detection():
     image_file = st. file_uploader('Upload Image', #파일업로드 
                 type= ['png', 'jpg','jpeg']) #업로드 될 수 있는 이미지 파일
     if image_file is not None :
+        detection_model = load_model()
         st.write(image_file.name)
         img = load_image(image_file)
         pix = np.array(img)
-        show_inference(detection_model, pix)
+        display_class_list = show_inference(detection_model, pix)
         # print(pix)
+
+        ## 라벨 불러오기
+        # List of the strings that is used to add correct label for each box.
+        # 라벨 가져오기
+        my_legend = np.full(( len(display_class_list) * 25 ,  300 , 3 ) , 255  , dtype='uint8' )
+        for i,class_name in enumerate(display_class_list) :
+            cv2.putText(my_legend, class_name, (5, (i*25) + 17) , 
+                        cv2.FONT_HERSHEY_TRIPLEX, 0.5, (0, 0, 0) , 1 )
+
+        st.sidebar.image(my_legend,width=300, caption = 'color bar')
+        
+
 
 def video_detection():
     pass

@@ -103,25 +103,33 @@ def yolo_detection():
         # st.image(img, width= 700)
 
         all_classes = get_classess('database/yolo/data/coco_classes.txt')
-        yolo = YOLO(0.6,0.6)
+        st.sidebar.text('''object\n물체의 정확도에 대한 기준''')
+        object_threshold = st.sidebar.slider('obj_threshold',min_value = 0.2, max_value=1.0, step = 0.1)
+        st.sidebar.text('''non-maximum-suppression (IOU)\n같은 물체의 겹쳐지는 박스를 제거 하기 위한 기준''')
+        nms_threshold = st.sidebar.slider('nms_threshold',min_value = 0.2, max_value=1.0, step = 0.1)
+        yolo = YOLO(object_threshold,nms_threshold)
+
+        st.sidebar.text("object_thresthod : "+ str(round(object_threshold,1)))
+        st.sidebar.text("nms_thresthod : "+ str(round(nms_threshold,1)))
+
         image = np.array(img)
         result_image,  class_dic = detect_image(image, yolo, all_classes)
-        # cv2.rectangle(result_image, (top, left), (right, bottom), (255, 0, 0), 2)
+        
+
+        select_list = {i[0] for i in class_dic.values()}
+        select_class= st.sidebar.selectbox('데이터 표시', list(select_list))
 
         print(class_dic)
-        st.sidebar.subheader('object score')
+        st.sidebar.subheader('물체 정확도')
         for i, (class_name, class_score,box)  in class_dic.items():
             st.sidebar.write('**'+class_name+'**'+ '  '+ str(round(class_score,2)))
-        select_list = {i[0] for i in class_dic.values()}
-        
-        select_class= st.sidebar.selectbox('데이터 표시', list(select_list))
+
 
 
         for i in class_dic.values():
             if i[0] in select_class :
                 box = i[2]
                 x, y, w, h = box
-
                 top = max(0, np.floor(x + 0.5).astype(int))
                 left = max(0, np.floor(y + 0.5).astype(int))
                 right = min(image.shape[1], np.floor(x + w + 0.5).astype(int))
