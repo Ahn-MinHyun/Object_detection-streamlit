@@ -91,22 +91,27 @@ def detect_image( image, yolo, all_classes):
 
 
 def yolo_detection():
-    st.title(' image object detetion')
+    st.title('YOLO image object detetion')
 
-
+    st.text('서버의 사양이 낮아 변환 불가로 동영상첨부')
+    ssd_video = open('database/video/yolo.mp4','rb').read()
+    st.video(ssd_video)
 
     st.subheader('이미지파일 업로드')
     image_file = st.file_uploader('Upload Image', #파일업로드 
                                 type= ['png', 'jpg','jpeg']) #업로드 될 수 있는 이미지 파일
+
+    st.sidebar.text('''object\n물체의 정확도에 대한 기준''')
+    object_threshold = st.sidebar.slider('obj_threshold',min_value = 0.2, max_value=1.0, step = 0.1)
+    st.sidebar.text('''non-maximum-suppression (IOU)\n같은 물체의 겹쳐지는 박스를 제거 하기 위한 기준''')
+    nms_threshold = st.sidebar.slider('nms_threshold',min_value = 0.2, max_value=1.0, step = 0.1)
+
     if image_file is not None :
         img = load_image(image_file)
         # st.image(img, width= 700)
 
         all_classes = get_classess('database/yolo/data/coco_classes.txt')
-        st.sidebar.text('''object\n물체의 정확도에 대한 기준''')
-        object_threshold = st.sidebar.slider('obj_threshold',min_value = 0.2, max_value=1.0, step = 0.1)
-        st.sidebar.text('''non-maximum-suppression (IOU)\n같은 물체의 겹쳐지는 박스를 제거 하기 위한 기준''')
-        nms_threshold = st.sidebar.slider('nms_threshold',min_value = 0.2, max_value=1.0, step = 0.1)
+
         yolo = YOLO(object_threshold,nms_threshold)
 
         st.sidebar.text("object_thresthod : "+ str(round(object_threshold,1)))
@@ -114,13 +119,21 @@ def yolo_detection():
 
         image = np.array(img)
         result_image,  class_dic = detect_image(image, yolo, all_classes)
-        
-
+        if result_image is None:
+            pass
+        else:
+            return result_image, class_dic
+    else :
+        return 0,0
+def select_object(result_image, class_dic):
+    if result_image is 0:
+        pass
+    else :
         select_list = {i[0] for i in class_dic.values()}
-        select_class= st.sidebar.selectbox('데이터 표시', list(select_list))
+        select_class= st.sidebar.selectbox('object', list(select_list))
 
         print(class_dic)
-        st.sidebar.subheader('물체 정확도')
+        st.sidebar.subheader('Detected object')
         for i, (class_name, class_score,box)  in class_dic.items():
             st.sidebar.write('**'+class_name+'**'+ '  '+ str(round(class_score,2)))
 
@@ -132,8 +145,8 @@ def yolo_detection():
                 x, y, w, h = box
                 top = max(0, np.floor(x + 0.5).astype(int))
                 left = max(0, np.floor(y + 0.5).astype(int))
-                right = min(image.shape[1], np.floor(x + w + 0.5).astype(int))
-                bottom = min(image.shape[0], np.floor(y + h + 0.5).astype(int))
+                right = min(result_image.shape[1], np.floor(x + w + 0.5).astype(int))
+                bottom = min(result_image.shape[0], np.floor(y + h + 0.5).astype(int))
 
                 cv2.rectangle(result_image, (top, left), (right, bottom), (135, 250, 51), 2)
 

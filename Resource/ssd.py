@@ -1,21 +1,12 @@
 import streamlit as st
 import cv2
-import os
+
 import pathlib
 import numpy as np
 
-import tempfile
-import six.moves.urllib as urllib
-import sys
-# import tarfilest
 import tensorflow as tf
-import zipfile
 
-from collections import defaultdict
-from io import StringIO
-from matplotlib import pyplot as plt
 from PIL import Image
-from IPython.display import display
 
 from object_detection.utils import ops as utils_ops
 from object_detection.utils import label_map_util
@@ -128,7 +119,11 @@ def image_detection():
     # 모델 불러오기
 
 
-    st.title('tesorflow image object detetion')
+    st.title('SSD image object detetion')
+
+    st.text('서버의 사양이 낮아 변환 불가로 동영상첨부')
+    ssd_video = open('database/video/ssd.mp4','rb').read()
+    st.video(ssd_video)
 
     st.subheader('이미지파일 업로드')
     image_file = st. file_uploader('Upload Image', #파일업로드 
@@ -149,7 +144,7 @@ def image_detection():
             cv2.putText(my_legend, class_name, (5, (i*25) + 17) , 
                         cv2.FONT_HERSHEY_TRIPLEX, 0.5, (0, 0, 0) , 1 )
 
-        st.sidebar.image(my_legend,width=300, caption = 'color bar')
+        st.sidebar.image(my_legend,width=300, caption = 'Detected object')
         
 
 

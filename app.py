@@ -2,7 +2,7 @@ import streamlit as st
 from Resource.Intro import Home
 from Resource.ssd import image_detection, video_detection
 from Resource.segmentation import  segementic_detection
-from Resource.yolo import yolo_detection
+from Resource.yolo import yolo_detection, select_object
 
 def main():
 
@@ -23,7 +23,9 @@ def main():
         segementic_detection()
 
     elif choice == 'YOLO':
-        yolo_detection()
+        result_image, class_dic= yolo_detection()
+        select_object(result_image, class_dic)
+
         
 
     else: 

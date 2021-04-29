@@ -24,6 +24,9 @@ def load_image(image_file):
 def segementic_detection():
     st.title('Image Segmentic segmentation')
 
+    st.text('서버의 사양이 낮아 변환 불가로 동영상첨부')
+    ssd_video = open('database/video/seg.mp4','rb').read()
+    st.video(ssd_video)
     
     
     st.subheader('분할하고 싶은 이미지')

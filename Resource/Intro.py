@@ -47,8 +47,7 @@ def Home():
     st.image('http://ataspinar.com/wp-content/uploads/2017/11/deeplearing_types.png')
     st.write('''Detection이 물체가 있는 위치를 찾아서 물체에 대해 Boxing을 하는 것이였다면, 
     Segmentation이란 한 그림 안에서 **영역**을 나누는 방식입니다.''')
-    seg_reference = Image.open('database/image/Segementation.png')
-    st.image(seg_reference)
+    st.image('https://oi.readthedocs.io/en/latest/_images/ss_sliding_window.png')
 
     
 
