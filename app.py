@@ -1,8 +1,8 @@
 import streamlit as st
 from Resource.Intro import Home
-from Resource.ssd import image_detection, video_detection
-from Resource.segmentation import  segementic_detection
-from Resource.yolo import yolo_detection, select_object
+from Resource.ssd import ssd_inference
+from Resource.segmentation import segmentic_inference
+from Resource.yolo import yolo_inference
 
 def main():
 
@@ -16,15 +16,18 @@ def main():
         Home()
 
     elif choice == 'SSD':
-        image_detection()
-        video_detection()
+        ssd_inference()
+        # image_detection()
+        # video_detection()
     
     elif choice == 'segmentation':
-        segementic_detection()
+        segmentic_inference()
+        # segementic_detection()
 
     elif choice == 'YOLO':
-        result_image, class_dic= yolo_detection()
-        select_object(result_image, class_dic)
+        yolo_inference()
+        # result_image, class_dic= yolo_detection()
+        # select_object(result_image, class_dic)
 
         
 
