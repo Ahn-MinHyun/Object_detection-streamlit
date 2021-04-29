@@ -8,7 +8,7 @@ __pycache__/
 database/yolo
 database/models
 database/video
-database/
+database
 
 
 # Distribution / packaging
