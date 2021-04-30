@@ -17,7 +17,7 @@ def main():
 
     elif choice == 'SSD':
         ssd_inference()
-        image_detection()
+        # image_detection()
 
     
     elif choice == 'segmentation':
@@ -26,9 +26,8 @@ def main():
 
     elif choice == 'YOLO':
         yolo_inference()
-        result_image, class_dic= yolo_detection()
-        select_object(result_image, class_dic)
-
+        # result_image, class_dic= yolo_detection()
+        # select_object(result_image, class_dic)
         
 
     else: 
