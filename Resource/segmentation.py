@@ -214,9 +214,9 @@ def segementic_detection():
         st.sidebar.write('Model : cityscapes/enet')
         st.sidebar.text('구분 색의 농도')
         mask_slide = st.sidebar.slider('mask',min_value=0.3, max_value=1.0, step=0.05)
-        # print(mask_slide)
-        cv_enet_model_output = ( ( (1-mask_slide) * sample_img ) + ( mask_slide * mask_class_map) ).astype('uint8')
-
+        # cv_enet_model_output = ( ( (1-mask_slide) * sample_img ) + ( mask_slide * mask_class_map) ).astype('uint8')
+   
+        cv_enet_model_output = ( ( (0.5) * sample_img ) + ( 0.5 * mask_class_map) ).astype('uint8')
         # 라벨 가져오기
         my_legend = np.full(( len(label_values) * 25 ,  300 , 3 ) , 255  , dtype='uint8' )
         # my_legend = np.zeros( ( len(label_values) * 25 ,  300 , 3 )   , dtype='uint8' )
